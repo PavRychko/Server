@@ -7,7 +7,8 @@ public class RequestHandler {
     BufferedReader socketReader;
     BufferedWriter socketWriter;
 
-public void handle(){
+    public void handle() {
 
-}
+
+    }
 }

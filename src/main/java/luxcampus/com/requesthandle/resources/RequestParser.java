@@ -2,9 +2,8 @@ package luxcampus.com.requesthandle.resources;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
+
 
 public class RequestParser {
 
@@ -13,8 +12,12 @@ public class RequestParser {
         Request request = new Request();
         String firstLine = requestReader.readLine();
         injectUriAndMethod(firstLine, request);
-        String headerLines = requestReader.lines().collect(Collectors.joining()); // прибирає всі \n
-        injectHeaders(headerLines, request);
+
+        String header;
+        while ((header = requestReader.readLine()) != null) {
+            injectHeaders(header, request);
+        }
+
         return request;
     }
 
@@ -26,12 +29,10 @@ public class RequestParser {
     }
 
     private void injectHeaders(String line, Request request) {
-        Map<String, String> headers = new HashMap<>();
-        String[] splitHeaders = line.split("\n");
-        for (int i = 0; i < splitHeaders.length; i++) {
-            String[] splitHeaderLines = splitHeaders[i].split(": ", 1);
-            headers.put(splitHeaderLines[0], splitHeaderLines[1]);
-        }
-        request.setHeaders(headers);
+        Map<String, String> headers = request.getHeaders();
+        String[] splitHeaderLines = line.split(" ", 2);
+        headers.put(splitHeaderLines[0], splitHeaderLines[1]);
+//        request.setHeaders(headers);
     }
+
 }

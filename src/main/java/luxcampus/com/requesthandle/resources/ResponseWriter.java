@@ -4,7 +4,7 @@ import java.io.BufferedWriter;
 
 public class ResponseWriter {
 
-    public void writeResponse(String content, BufferedWriter writer){
+    public void writeResponse(String content, BufferedWriter writer) {
 
     }
 }

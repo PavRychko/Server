@@ -1,5 +1,6 @@
 package luxcampus.com.requesthandle.resources;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class Request {
@@ -8,6 +9,7 @@ public class Request {
     HttpMethod method;
 
     public Request() {
+        this.headers = new HashMap<>();
     }
 
     public Request(String uri, Map<String, String> headers, HttpMethod method) {
