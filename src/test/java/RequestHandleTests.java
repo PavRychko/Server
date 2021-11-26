@@ -1,7 +1,4 @@
-import luxcampus.com.requesthandle.resources.HttpMethod;
-import luxcampus.com.requesthandle.resources.Request;
-import luxcampus.com.requesthandle.resources.RequestParser;
-import luxcampus.com.requesthandle.resources.ResourceReader;
+import luxcampus.com.requesthandle.resources.*;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,14 +16,13 @@ public class RequestHandleTests {
 
 
     @BeforeAll
-    private static void createRequestFile() throws IOException {
-        Files.createFile(Path.of("request.txt"));
-        try (BufferedWriter bufferedWriter = Files.newBufferedWriter(Path.of("request.txt"), StandardOpenOption.WRITE)) {
+    private static void createFilesForTests() throws IOException {
+        Files.createFile(Path.of("src/main/resources/webApp/request.txt"));
+        try (BufferedWriter bufferedWriter = Files.newBufferedWriter(Path.of("src/main/resources/webApp/request.txt"), StandardOpenOption.WRITE)) {
             bufferedWriter.write("GET /wiki/HTTP HTTP/1.1\n" +
                     "Host: uk.wikipedia.org\n" +
                     "User-Agent: firefox/5.0 (Linux; Debian 5.0.8; en-US; rv:1.8.1.7) Gecko/20070914 Firefox/2.0.0.7\n" +
                     "Connection: close");
-
         }
     }
 
@@ -34,7 +30,7 @@ public class RequestHandleTests {
     @Test
     public void requestParserParseMethodReturnsCorrectRequestObject() throws IOException {
         Request expected = createExpectedRequest();
-        Request actual = requestParser.parse(Files.newBufferedReader(Path.of("request.txt")));
+        Request actual = requestParser.parse(Files.newBufferedReader(Path.of("src/main/resources/webApp/request.txt")));
         assertEquals(expected.getUri(), actual.getUri());
         assertEquals(expected.getMethod(), actual.getMethod());
         Map<String, String> expectedHeaders = expected.getHeaders();
@@ -45,20 +41,23 @@ public class RequestHandleTests {
     }
 
     @Test
-    public void resourceReaderReturnsCorrectResponse() {
-        ResourceReader resourceReader = new ResourceReader();
-        resourceReader.setWebAppPath("src/main/resources/webApp");
-        String correctUri = "index.html";
-        String notCorrectUri = "index2.html";
-        assertEquals("src/main/resources/webApp" + correctUri, resourceReader.readResource(correctUri));
-//        assertEquals();
-
+    public void resourceReaderReturnsCorrectResource() throws IOException {
+        ResourceReader resourceReader = new ResourceReader("src/main/resources/webApp");
+        String uri = "request.txt";
+        String notCorrectUri = "request2.txt";
+        assertEquals("GET /wiki/HTTP HTTP/1.1\n" +
+                "Host: uk.wikipedia.org\n" +
+                "User-Agent: firefox/5.0 (Linux; Debian 5.0.8; en-US; rv:1.8.1.7) Gecko/20070914 Firefox/2.0.0.7\n" +
+                "Connection: close", resourceReader.readResource(uri));
+        assertNull(resourceReader.readResource(notCorrectUri));
     }
+
 
 
     @AfterAll
     private static void deleteRequestFile() throws IOException {
-        Files.delete(Path.of("request.txt"));
+        Files.delete(Path.of("src/main/resources/webApp/request.txt"));
+
     }
 
 

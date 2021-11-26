@@ -20,7 +20,7 @@ public class Server {
                      BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                      BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))
                 ) {
-                    RequestHandler requestHandler = new RequestHandler();
+                    RequestHandler requestHandler = new RequestHandler(bufferedReader, bufferedWriter, webAppPath);
                     requestHandler.handle();
 
                 }

@@ -14,7 +14,10 @@ public class RequestParser {
         injectUriAndMethod(firstLine, request);
 
         String header;
-        while ((header = requestReader.readLine()) != null) {
+        while ((header = requestReader.readLine()) != null){
+            if(header.equals("")|| header.equals(" ")){
+                break;
+            }
             injectHeaders(header, request);
         }
 
@@ -29,10 +32,10 @@ public class RequestParser {
     }
 
     private void injectHeaders(String line, Request request) {
+
         Map<String, String> headers = request.getHeaders();
         String[] splitHeaderLines = line.split(" ", 2);
         headers.put(splitHeaderLines[0], splitHeaderLines[1]);
-//        request.setHeaders(headers);
     }
 
 }
