@@ -1,31 +1,39 @@
 package luxcampus.com.server;
 
+import luxcampus.com.requesthandle.RequestHandler;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Objects;
 
 public class Server {
-    private final static String EXIT_MESSAGE = "exit";
+    private static final int INITIAL_SERVER_PORT = 3000;
+    int port = INITIAL_SERVER_PORT;
+    String webAppPath;
 
-    public static void main(String[] args) throws IOException {
-        while (true) {
-            try (ServerSocket serverSocket = new ServerSocket(3000);
-                 Socket socket = serverSocket.accept();
-                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                 BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))
-            ) {
-                String clientMessage = bufferedReader.readLine();
-                if (Objects.equals(clientMessage.toLowerCase(), EXIT_MESSAGE)) {
-                    bufferedWriter.write("Server Shutdown");
-                    bufferedWriter.flush();
-                    break;
+
+    public void start() throws IOException {
+        try (ServerSocket serverSocket = new ServerSocket(port)
+        ) {
+            while (true) {
+                try (Socket socket = serverSocket.accept();
+                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                     BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))
+                ) {
+                    RequestHandler requestHandler = new RequestHandler(bufferedReader, bufferedWriter, webAppPath);
+                    requestHandler.handle();
+
                 }
-                bufferedWriter.write("echo " + clientMessage);
-                bufferedWriter.flush();
-
             }
         }
-        System.out.println("server shutdown");
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+
+    public void setPath(String webAppPath) {
+        this.webAppPath = webAppPath;
     }
 }
