@@ -16,7 +16,7 @@ public class ResourceReader {
         File file = new File(webAppPath + "/" + uri);
         StringJoiner stringJoiner = new StringJoiner("\n");
         String line;
-        if (Files.isDirectory(Path.of(webAppPath))&& file.exists()) {
+        if (file.exists()&& file.isFile()) {
             try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(webAppPath + "/" + uri)))) {
                 while ((line = bufferedReader.readLine()) != null) {
                     stringJoiner.add(line);

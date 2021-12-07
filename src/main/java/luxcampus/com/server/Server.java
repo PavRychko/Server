@@ -28,19 +28,10 @@ public class Server {
         }
     }
 
-
-    public int getPort() {
-        return port;
-    }
-
     public void setPort(int port) {
         this.port = port;
     }
 
-
-    public String getPath() {
-        return webAppPath;
-    }
 
     public void setPath(String webAppPath) {
         this.webAppPath = webAppPath;
